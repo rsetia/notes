@@ -1,0 +1,7 @@
+# aggregate queries in a slow log
+
+wget http://percona.com/get/pt-query-digest
+chmod +x ./pt-query-digest
+./pt-query-digest /path/to/slow-query-log.sql> digest-output.txt
+
+
