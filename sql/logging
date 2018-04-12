@@ -1,0 +1,5 @@
+# see variables (like log location)
+SHOW VARIABLES LIKE 'general_log_file';
+
+# enable logging
+SET global general_log = on;
