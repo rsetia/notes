@@ -1,0 +1,2 @@
+# check connections with other hosts except
+tcpdump not src host [IP]
