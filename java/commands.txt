@@ -1,0 +1,5 @@
+Download the jars and put them into the lib directory: 
+
+	mvn dependency:copy-dependencies -DoutputDirectory=./lib/
+
+Then compile the source and specify the jars in the classpath. 

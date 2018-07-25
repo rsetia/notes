@@ -1,0 +1,115 @@
+
+https://www.youtube.com/watch?v=iKtvNJQoCNw
+
+Race condition - when code is non-deterministic due to code being executed on shared resources at different times
+
+These are avoided by syncronization of access to shared resources. The code that accesses shared resources is called the
+critical section. We need mutual exclusivity for these resources. 
+
+Critical section properties:
+	Mutual exclusion - one thread at a time
+	progress - a thread that exits a critical section shouldn't prevent others from entering (ie no deadlocks)
+	bounded waiting - prevent threads from waiting on entering for too long
+	performance - overhead of entering and exiting is small
+	fair - don't have some threads wait longer than others
+
+to satisfy these requirements we have some synronization solutions. 
+
+1. Atomicity
+	Ensure that threads have exclusive access to the resource. 
+
+2. Conditional syncronization
+	
+
+Lock - before writing a shared resource a thread must obtain a lock. After finishing, it will release the lock
+	for other threads to obtain. Thus, it provides mutual exclusion. 
+
+Semaphores - does more than locks, but is harder to program. It can place ordering an ordering on scheduling of threads.
+	Eg. ps | grep "gcc"
+
+	two processes, ps and grep. ps is producing and grep is consuming. In order to avoid excessive thread switching, use a
+		shared buffer. produces writes to it until it is full, then the context switches and the consumer consumes it until it is empty. 
+
+	Semaphore(c):
+		counter = c
+		pQueue = [] 
+
+		def wait():
+			if counter > 0:
+				counter -= 1 
+			else:
+				pQueue.add(this process)
+				block
+
+		def signal():
+			if pQueue.nonEmpty():
+				P = pQueue.remove()
+				wakeup(P)
+			else:
+				counter += 1 
+
+	both wait and signal are critical sections
+
+	The c value indicates how many threads can "hold" the semaphore. Any additional threads trying to hold it will block. 
+	Semaphores are assosciated with a shared buffer and allow to queue up threads trying to access that shared resourced. 
+
+	If c == 1, semaphores behave like a lock. This is called a binary semaphore or mutex semaphore. Used for atomicity. 
+
+
+		def depositWithLock(amount):
+			acquire(lock)
+			balance += amount
+			release(lock)
+
+		def depositWithBinarySemaphore(amount):
+			wait(sem)
+			balance += amount
+		signal(sem)
+
+	If c > 1, then we have a counting semaphore. Used for conditional syncronization. 
+
+		Eg. Bounded Buffer - suppose we have N buffers and context switch between a producer and consumer when it is full or emptied
+			mutex = Semaphore(1)
+			fullBuffer = Semaphore(0)
+			emptyBuffer = Semaphore(N)
+
+			producer:
+				while True:
+					emptyBuffer.wait()
+
+					mutex.wait()
+					buffer.insert() 
+					mutex.signal()
+
+					fullBuffer.signal()
+
+
+			consumer:
+				while True:
+					fullBuffer.wait()
+					mutex.wait()
+
+					buffer.remove() 
+
+					mutex.signal()
+					emptyBuffer.signal()
+
+
+Monitors 
+
+	Semaphores are hard to use. Instead you can use monitors. 
+		A monitor encapsulates:
+			- shared data structures
+			- procedures that operate on the data (the API)
+			- syncronization between concurrent processes that use the procedures 
+
+		A waiting queue is used to ensure that only one process enters the monitor. If a thread tries to use a monitor that is 
+			already being used then it is blocked until it is free. 
+
+
+
+How do different processes share a buffer for communication ? 
+
+
+
+
